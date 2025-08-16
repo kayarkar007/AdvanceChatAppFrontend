@@ -48,9 +48,10 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
   const handleStartConversation = async (selectedUser) => {
     try {
       // Create conversation with the selected user
-      const response = await conversationAPI.createConversation([
-        selectedUser._id,
-      ]);
+      const response = await conversationAPI.createConversation({
+        participants: [selectedUser._id],
+        type: "direct",
+      });
 
       if (response.data) {
         addConversation(response.data);

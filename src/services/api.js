@@ -129,16 +129,26 @@ export const userAPI = {
 
 // Conversation API
 export const conversationAPI = {
-  getConversations: () => api.get('/conversations'),
-  getConversation: (conversationId) => api.get(`/conversations/${conversationId}`),
-  createConversation: (participants) => api.post('/conversations', { participants }),
-  updateConversation: (conversationId, updates) => api.put(`/conversations/${conversationId}`, updates),
-  deleteConversation: (conversationId) => api.delete(`/conversations/${conversationId}`),
-  markAsRead: (conversationId) => api.put(`/conversations/${conversationId}/read`),
-  addParticipants: (conversationId, participants) => api.post(`/conversations/${conversationId}/participants`, { participants }),
-  removeParticipant: (conversationId, participantId) => api.delete(`/conversations/${conversationId}/participants/${participantId}`),
-  leaveConversation: (conversationId) => api.post(`/conversations/${conversationId}/leave`),
-}
+  getConversations: () => api.get("/conversations"),
+  getConversation: (conversationId) =>
+    api.get(`/conversations/${conversationId}`),
+  createConversation: (conversationData) =>
+    api.post("/conversations", conversationData),
+  updateConversation: (conversationId, updates) =>
+    api.put(`/conversations/${conversationId}`, updates),
+  deleteConversation: (conversationId) =>
+    api.delete(`/conversations/${conversationId}`),
+  markAsRead: (conversationId) =>
+    api.put(`/conversations/${conversationId}/read`),
+  addParticipants: (conversationId, participants) =>
+    api.post(`/conversations/${conversationId}/participants`, { participants }),
+  removeParticipant: (conversationId, participantId) =>
+    api.delete(
+      `/conversations/${conversationId}/participants/${participantId}`
+    ),
+  leaveConversation: (conversationId) =>
+    api.post(`/conversations/${conversationId}/leave`),
+};
 
 // Message API
 export const messageAPI = {
