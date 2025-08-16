@@ -76,17 +76,39 @@ const Register = () => {
           className="bg-white dark:bg-secondary-800 rounded-2xl shadow-xl p-8 border border-secondary-200 dark:border-secondary-700"
         >
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <Input
+              label="Username"
+              placeholder="johndoe"
+              leftIcon={<User className="w-5 h-5 text-secondary-400" />}
+              error={errors.username?.message}
+              {...register("username", {
+                required: "Username is required",
+                minLength: {
+                  value: 3,
+                  message: "Username must be at least 3 characters",
+                },
+                maxLength: {
+                  value: 30,
+                  message: "Username cannot exceed 30 characters",
+                },
+                pattern: {
+                  value: /^[a-zA-Z0-9_]+$/,
+                  message:
+                    "Username can only contain letters, numbers, and underscores",
+                },
+              })}
+            />
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="First Name"
                 placeholder="John"
                 leftIcon={<User className="w-5 h-5 text-secondary-400" />}
                 error={errors.firstName?.message}
-                {...register('firstName', {
-                  required: 'First name is required',
+                {...register("firstName", {
+                  required: "First name is required",
                   minLength: {
                     value: 2,
-                    message: 'First name must be at least 2 characters',
+                    message: "First name must be at least 2 characters",
                   },
                 })}
               />
@@ -95,11 +117,11 @@ const Register = () => {
                 placeholder="Doe"
                 leftIcon={<User className="w-5 h-5 text-secondary-400" />}
                 error={errors.lastName?.message}
-                {...register('lastName', {
-                  required: 'Last name is required',
+                {...register("lastName", {
+                  required: "Last name is required",
                   minLength: {
                     value: 2,
-                    message: 'Last name must be at least 2 characters',
+                    message: "Last name must be at least 2 characters",
                   },
                 })}
               />
@@ -112,18 +134,18 @@ const Register = () => {
               leftIcon={<Mail className="w-5 h-5 text-secondary-400" />}
               error={errors.email?.message}
               fullWidth
-              {...register('email', {
-                required: 'Email is required',
+              {...register("email", {
+                required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
+                  message: "Invalid email address",
                 },
               })}
             />
 
             <Input
               label="Password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Create a strong password"
               leftIcon={<Lock className="w-5 h-5 text-secondary-400" />}
               rightIcon={
@@ -141,22 +163,24 @@ const Register = () => {
               }
               error={errors.password?.message}
               fullWidth
-              {...register('password', {
-                required: 'Password is required',
+              {...register("password", {
+                required: "Password is required",
                 minLength: {
                   value: 8,
-                  message: 'Password must be at least 8 characters',
+                  message: "Password must be at least 8 characters",
                 },
                 pattern: {
-                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-                  message: 'Password must contain uppercase, lowercase, number and special character',
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+                  message:
+                    "Password must contain uppercase, lowercase, number and special character",
                 },
               })}
             />
 
             <Input
               label="Confirm Password"
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm your password"
               leftIcon={<Lock className="w-5 h-5 text-secondary-400" />}
               rightIcon={
@@ -174,10 +198,10 @@ const Register = () => {
               }
               error={errors.confirmPassword?.message}
               fullWidth
-              {...register('confirmPassword', {
-                required: 'Please confirm your password',
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
                 validate: (value) =>
-                  value === password || 'Passwords do not match',
+                  value === password || "Passwords do not match",
               })}
             />
 
@@ -185,16 +209,16 @@ const Register = () => {
               <input
                 type="checkbox"
                 className="w-4 h-4 mt-1 text-primary-600 bg-secondary-100 border-secondary-300 rounded focus:ring-primary-500 focus:ring-2"
-                {...register('agreeToTerms', {
-                  required: 'You must agree to the terms and conditions',
+                {...register("agreeToTerms", {
+                  required: "You must agree to the terms and conditions",
                 })}
               />
               <label className="ml-2 text-sm text-secondary-600 dark:text-secondary-400">
-                I agree to the{' '}
+                I agree to the{" "}
                 <a href="#" className="text-primary-600 hover:text-primary-500">
                   Terms of Service
-                </a>{' '}
-                and{' '}
+                </a>{" "}
+                and{" "}
                 <a href="#" className="text-primary-600 hover:text-primary-500">
                   Privacy Policy
                 </a>
@@ -234,7 +258,9 @@ const Register = () => {
             <Button
               variant="outline"
               size="md"
-              onClick={() => toast.error('Google registration not implemented yet')}
+              onClick={() =>
+                toast.error("Google registration not implemented yet")
+              }
               className="w-full"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -260,11 +286,17 @@ const Register = () => {
             <Button
               variant="outline"
               size="md"
-              onClick={() => toast.error('GitHub registration not implemented yet')}
+              onClick={() =>
+                toast.error("GitHub registration not implemented yet")
+              }
               className="w-full"
             >
-              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
               </svg>
               GitHub
             </Button>
@@ -272,7 +304,7 @@ const Register = () => {
 
           {/* Sign In Link */}
           <p className="mt-6 text-center text-sm text-secondary-600 dark:text-secondary-400">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link
               to="/login"
               className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
@@ -283,7 +315,7 @@ const Register = () => {
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }
 
 export default Register 

@@ -68,8 +68,10 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
       let users = [];
 
       if (searchQuery.length >= 2) {
+        // Handle API response structure
         users = searchResults?.data || [];
       } else {
+        // Handle API response structure
         users = allUsers?.data || [];
       }
 
@@ -189,10 +191,10 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
                           </div>
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
-                              {userItem.firstName} {userItem.lastName}
+                              {userItem.fullName || `${userItem.firstName} ${userItem.lastName}`}
                             </p>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {userItem.email}
+                              @{userItem.username}
                             </p>
                           </div>
                         </div>
