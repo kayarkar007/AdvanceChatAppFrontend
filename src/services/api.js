@@ -142,17 +142,26 @@ export const conversationAPI = {
 
 // Message API
 export const messageAPI = {
-  getMessages: (conversationId, page = 1, limit = 50) => 
-    api.get(`/conversations/${conversationId}/messages?page=${page}&limit=${limit}`),
-  sendMessage: (conversationId, messageData) => 
-    api.post(`/conversations/${conversationId}/messages`, messageData),
-  updateMessage: (messageId, updates) => api.put(`/messages/${messageId}`, updates),
+  getMessages: (conversationId, page = 1, limit = 50) =>
+    api.get(
+      `/messages/conversations/${conversationId}/messages?page=${page}&limit=${limit}`
+    ),
+  sendMessage: (conversationId, messageData) =>
+    api.post(`/messages/conversations/${conversationId}/messages`, messageData),
+  updateMessage: (messageId, updates) =>
+    api.put(`/messages/${messageId}`, updates),
   deleteMessage: (messageId) => api.delete(`/messages/${messageId}`),
-  reactToMessage: (messageId, reaction) => api.post(`/messages/${messageId}/reactions`, { reaction }),
-  removeReaction: (messageId, reaction) => api.delete(`/messages/${messageId}/reactions/${reaction}`),
-  forwardMessage: (messageId, conversationIds) => api.post(`/messages/${messageId}/forward`, { conversationIds }),
-  searchMessages: (conversationId, query) => api.get(`/conversations/${conversationId}/messages/search?q=${query}`),
-}
+  reactToMessage: (messageId, reaction) =>
+    api.post(`/messages/${messageId}/reactions`, { reaction }),
+  removeReaction: (messageId, reaction) =>
+    api.delete(`/messages/${messageId}/reactions/${reaction}`),
+  forwardMessage: (messageId, conversationIds) =>
+    api.post(`/messages/${messageId}/forward`, { conversationIds }),
+  searchMessages: (conversationId, query) =>
+    api.get(
+      `/messages/conversations/${conversationId}/messages/search?q=${query}`
+    ),
+};
 
 // File API
 export const fileAPI = {
