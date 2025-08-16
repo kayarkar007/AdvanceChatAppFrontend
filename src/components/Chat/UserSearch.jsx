@@ -68,11 +68,11 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
       let users = [];
 
       if (searchQuery.length >= 2) {
-        // Handle API response structure
-        users = searchResults?.data || [];
+        // Handle API response structure - searchResults is the full response
+        users = searchResults?.data?.data || searchResults?.data || [];
       } else {
-        // Handle API response structure
-        users = allUsers?.data || [];
+        // Handle API response structure - allUsers is the full response
+        users = allUsers?.data?.data || allUsers?.data || [];
       }
 
       // Ensure it's an array
@@ -191,7 +191,8 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
                           </div>
                           <div>
                             <p className="font-medium text-gray-900 dark:text-white">
-                              {userItem.fullName || `${userItem.firstName} ${userItem.lastName}`}
+                              {userItem.fullName ||
+                                `${userItem.firstName} ${userItem.lastName}`}
                             </p>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
                               @{userItem.username}
