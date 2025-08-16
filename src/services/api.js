@@ -112,18 +112,20 @@ export const authAPI = {
 
 // User API
 export const userAPI = {
-  getProfile: () => api.get('/users/profile'),
-  updateProfile: (userData) => api.put('/users/profile', userData),
-  updateAvatar: (formData) => api.put('/users/avatar', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
+  getProfile: () => api.get("/users/profile"),
+  updateProfile: (userData) => api.put("/users/profile", userData),
+  updateAvatar: (formData) =>
+    api.put("/users/avatar", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
   searchUsers: (query) => api.get(`/users/search?q=${query}`),
   getUserById: (userId) => api.get(`/users/${userId}`),
-  getOnlineUsers: () => api.get('/users/online'),
-  updateStatus: (status) => api.put('/users/status', { status }),
+  getOnlineUsers: () => api.get("/users/online"),
+  getAllUsers: () => api.get("/users"),
+  updateStatus: (status) => api.put("/users/status", { status }),
   blockUser: (userId) => api.post(`/users/${userId}/block`),
   unblockUser: (userId) => api.delete(`/users/${userId}/block`),
-}
+};
 
 // Conversation API
 export const conversationAPI = {

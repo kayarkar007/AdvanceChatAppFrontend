@@ -8,46 +8,55 @@ import useChatStore from '../../store/useChatStore'
 import LoadingSpinner from '../UI/LoadingSpinner'
 
 const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const { user } = useAuthStore()
-  const { addConversation } = useChatStore()
+  const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuthStore();
+  const { addConversation } = useChatStore();
 
   // Search users query
-  const { data: searchResults, isLoading: isSearching, refetch } = useQuery({
-    queryKey: ['userSearch', searchQuery],
+  const {
+    data: searchResults,
+    isLoading: isSearching,
+    refetch,
+  } = useQuery({
+    queryKey: ["userSearch", searchQuery],
     queryFn: () => userAPI.searchUsers(searchQuery),
     enabled: searchQuery.length >= 2,
     staleTime: 30000, // 30 seconds
-  })
+  });
 
-  // Get online users
-  const { data: onlineUsers } = useQuery({
-    queryKey: ['onlineUsers'],
-    queryFn: userAPI.getOnlineUsers,
-    staleTime: 10000, // 10 seconds
-  })
+  // Get all users (not just online)
+  const { data: allUsers } = useQuery({
+    queryKey: ["allUsers"],
+    queryFn: userAPI.getAllUsers,
+    staleTime: 30000, // 30 seconds
+  });
 
   const handleSearch = (e) => {
-    const query = e.target.value
-    setSearchQuery(query)
-  }
+    const query = e.target.value;
+    setSearchQuery(query);
+  };
 
   const handleStartConversation = async (selectedUser) => {
     try {
       // Create conversation with the selected user
-      const response = await conversationAPI.createConversation([selectedUser._id])
-      
+      const response = await conversationAPI.createConversation([
+        selectedUser._id,
+      ]);
+
       if (response.data) {
-        addConversation(response.data)
-        onStartConversation?.(response.data)
-        onClose()
+        addConversation(response.data);
+        onStartConversation?.(response.data);
+        onClose();
       }
     } catch (error) {
-      console.error('Failed to start conversation:', error)
+      console.error("Failed to start conversation:", error);
     }
-  }
+  };
 
-  const displayUsers = searchQuery.length >= 2 ? searchResults?.data || [] : onlineUsers?.data || []
+  const displayUsers =
+    searchQuery.length >= 2
+      ? searchResults?.data || []
+      : allUsers?.data || [];
 
   return (
     <AnimatePresence>
@@ -82,7 +91,10 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
             {/* Search Input */}
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <input
                   type="text"
                   placeholder="Search users..."
@@ -103,16 +115,15 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
                 <div className="flex flex-col items-center justify-center p-8 text-gray-500 dark:text-gray-400">
                   <User size={48} className="mb-4 opacity-50" />
                   <p className="text-center">
-                    {searchQuery.length >= 2 
-                      ? 'No users found' 
-                      : 'No online users'
-                    }
+                    {searchQuery.length >= 2
+                      ? "No users found"
+                      : "No users available"}
                   </p>
                 </div>
               ) : (
                 <div className="p-2">
                   {displayUsers
-                    .filter(u => u._id !== user?._id) // Exclude current user
+                    .filter((u) => u._id !== user?._id) // Exclude current user
                     .map((userItem) => (
                       <motion.div
                         key={userItem._id}
@@ -135,9 +146,11 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <div className={`w-2 h-2 rounded-full ${
-                            userItem.isOnline ? 'bg-green-500' : 'bg-gray-400'
-                          }`} />
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              userItem.isOnline ? "bg-green-500" : "bg-gray-400"
+                            }`}
+                          />
                           <MessageCircle size={16} className="text-gray-400" />
                         </div>
                       </motion.div>
@@ -149,17 +162,16 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
             {/* Footer */}
             <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                {searchQuery.length >= 2 
+                {searchQuery.length >= 2
                   ? `Found ${displayUsers.length} users`
-                  : `${displayUsers.length} users online`
-                }
+                  : `${displayUsers.length} total users`}
               </p>
             </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }
 
 export default UserSearch 
