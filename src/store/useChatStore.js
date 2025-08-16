@@ -9,7 +9,12 @@ const useChatStore = create((set, get) => ({
 
   // Getters
   get activeConversation() {
-    return get().currentConversation;
+    const state = get();
+    console.log(
+      "🔍 activeConversation getter called, currentConversation:",
+      state.currentConversation?._id
+    );
+    return state.currentConversation;
   },
 
   // UI state

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { motion, AnimatePresence } from 'framer-motion'
-import ConversationList from './ConversationList'
-import MessageArea from './MessageArea'
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
+import ConversationList from "./ConversationList";
+import MessageArea from "./MessageArea";
 import UserSearch from "./UserSearch";
 import { conversationAPI } from "../../services/api";
 import useChatStore from "../../store/useChatStore";
@@ -14,15 +14,25 @@ const Chat = () => {
     setActiveConversation,
     conversations,
     setConversations,
+    currentConversation,
   } = useChatStore();
   const [isUserSearchOpen, setIsUserSearchOpen] = useState(false);
 
   // Debug logging
   console.log("🔍 Chat Debug:", {
     activeConversation: activeConversation?._id,
+    currentConversation: currentConversation?._id,
     conversationsCount: conversations?.length,
     isUserSearchOpen,
   });
+
+  // Force re-render when active conversation changes
+  useEffect(() => {
+    console.log(
+      "🔍 Chat component re-rendered, currentConversation:",
+      currentConversation?._id
+    );
+  }, [currentConversation]);
 
   // Fetch conversations
   const { isLoading, error } = useQuery({
@@ -74,8 +84,8 @@ const Chat = () => {
 
       {/* Message Area */}
       <div className="flex-1 flex flex-col">
-        {activeConversation ? (
-          <MessageArea conversation={activeConversation} />
+        {currentConversation ? (
+          <MessageArea conversation={currentConversation} />
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
@@ -121,4 +131,4 @@ const Chat = () => {
   );
 };
 
-export default Chat 
+export default Chat;
