@@ -3,7 +3,7 @@ import useAuthStore from '../store/useAuthStore'
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
-  "https://advance-chat-app-backend-pr79.onrender.com/api";
+  "https://advancechatappbackend.onrender.com/api";
 
 // Debug function to check token status
 const debugToken = () => {
