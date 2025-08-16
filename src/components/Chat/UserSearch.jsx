@@ -17,18 +17,27 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
     data: searchResults,
     isLoading: isSearching,
     refetch,
+    error: searchError,
   } = useQuery({
     queryKey: ["userSearch", searchQuery],
     queryFn: () => userAPI.searchUsers(searchQuery),
     enabled: searchQuery.length >= 2,
     staleTime: 30000, // 30 seconds
+    retry: 1,
+    onError: (error) => {
+      console.error("Failed to search users:", error);
+    },
   });
 
   // Get all users (not just online)
-  const { data: allUsers } = useQuery({
+  const { data: allUsers, error: allUsersError } = useQuery({
     queryKey: ["allUsers"],
     queryFn: userAPI.getAllUsers,
     staleTime: 30000, // 30 seconds
+    retry: 1,
+    onError: (error) => {
+      console.error("Failed to fetch all users:", error);
+    },
   });
 
   const handleSearch = (e) => {
@@ -53,10 +62,39 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
     }
   };
 
-  const displayUsers =
-    searchQuery.length >= 2
-      ? searchResults?.data || []
-      : allUsers?.data || [];
+  // Ensure displayUsers is always an array with better error handling
+  const displayUsers = (() => {
+    try {
+      let users = [];
+
+      if (searchQuery.length >= 2) {
+        users = searchResults?.data || [];
+      } else {
+        users = allUsers?.data || [];
+      }
+
+      // Ensure it's an array
+      if (!Array.isArray(users)) {
+        console.warn("Users data is not an array:", users);
+        return [];
+      }
+
+      return users;
+    } catch (error) {
+      console.error("Error processing displayUsers:", error);
+      return [];
+    }
+  })();
+
+  // Debug logging
+  console.log("🔍 UserSearch Debug:", {
+    searchQuery,
+    searchResults: searchResults?.data,
+    allUsers: allUsers?.data,
+    displayUsers,
+    isArray: Array.isArray(displayUsers),
+    displayUsersType: typeof displayUsers,
+  });
 
   return (
     <AnimatePresence>
@@ -111,6 +149,19 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
                 <div className="flex items-center justify-center p-8">
                   <LoadingSpinner size="md" />
                 </div>
+              ) : allUsersError ? (
+                <div className="flex flex-col items-center justify-center p-8 text-red-500 dark:text-red-400">
+                  <User size={48} className="mb-4 opacity-50" />
+                  <p className="text-center">
+                    Failed to load users. Please try again.
+                  </p>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  >
+                    Retry
+                  </button>
+                </div>
               ) : displayUsers.length === 0 ? (
                 <div className="flex flex-col items-center justify-center p-8 text-gray-500 dark:text-gray-400">
                   <User size={48} className="mb-4 opacity-50" />
@@ -123,7 +174,7 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
               ) : (
                 <div className="p-2">
                   {displayUsers
-                    .filter((u) => u._id !== user?._id) // Exclude current user
+                    .filter((u) => u && u._id && u._id !== user?._id) // Exclude current user and null items
                     .map((userItem) => (
                       <motion.div
                         key={userItem._id}
@@ -166,6 +217,12 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
                   ? `Found ${displayUsers.length} users`
                   : `${displayUsers.length} total users`}
               </p>
+              {displayUsers.length === 0 && (
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-2">
+                  No users found. Try registering another account to test the
+                  chat.
+                </p>
+              )}
             </div>
           </motion.div>
         </motion.div>
