@@ -47,19 +47,32 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
 
   const handleStartConversation = async (selectedUser) => {
     try {
+      console.log("🔍 Starting conversation with:", selectedUser);
+      
       // Create conversation with the selected user
       const response = await conversationAPI.createConversation({
         participants: [selectedUser._id],
         type: "direct",
       });
 
+      console.log("🔍 Conversation created:", response.data);
+
       if (response.data) {
+        // Add conversation to store
         addConversation(response.data);
+
+        // Set as active conversation
         onStartConversation?.(response.data);
+
+        // Close the modal
         onClose();
+
+        console.log("🔍 Conversation set as active:", response.data._id);
       }
     } catch (error) {
       console.error("Failed to start conversation:", error);
+      // Show error to user
+      alert("Failed to start conversation. Please try again.");
     }
   };
 

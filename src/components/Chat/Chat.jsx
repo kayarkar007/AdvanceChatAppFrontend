@@ -17,6 +17,13 @@ const Chat = () => {
   } = useChatStore();
   const [isUserSearchOpen, setIsUserSearchOpen] = useState(false);
 
+  // Debug logging
+  console.log("🔍 Chat Debug:", {
+    activeConversation: activeConversation?._id,
+    conversationsCount: conversations?.length,
+    isUserSearchOpen,
+  });
+
   // Fetch conversations
   const { isLoading, error } = useQuery({
     queryKey: ["conversations"],
