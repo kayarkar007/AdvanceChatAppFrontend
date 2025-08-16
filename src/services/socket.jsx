@@ -3,7 +3,7 @@ import useAuthStore from '../store/useAuthStore'
 import useChatStore from '../store/useChatStore'
 import toast from 'react-hot-toast'
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000'
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://advance-chat-app-backend-pr79.onrender.com'
 
 class SocketService {
   constructor() {
