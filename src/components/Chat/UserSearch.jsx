@@ -45,36 +45,46 @@ const UserSearch = ({ isOpen, onClose, onStartConversation }) => {
     setSearchQuery(query);
   };
 
-  const handleStartConversation = async (selectedUser) => {
-    try {
-      console.log("🔍 Starting conversation with:", selectedUser);
-      
-      // Create conversation with the selected user
-      const response = await conversationAPI.createConversation({
-        participants: [selectedUser._id],
-        type: "direct",
-      });
+    const handleStartConversation = async (selectedUser) => {
+      try {
+        console.log("🔍 Starting conversation with:", selectedUser);
 
-      console.log("🔍 Conversation created:", response.data);
+        // Create conversation with the selected user
+        const response = await conversationAPI.createConversation({
+          participants: [selectedUser._id],
+          type: "direct",
+        });
 
-      if (response.data) {
-        // Add conversation to store
-        addConversation(response.data);
+        console.log("🔍 Conversation response:", response.data);
 
-        // Set as active conversation
-        onStartConversation?.(response.data);
+        // Handle both new conversation creation and existing conversation
+        // The response structure is: { message: "...", data: conversationObject }
+        const conversationData = response.data?.data || response.data;
 
-        // Close the modal
-        onClose();
+        if (conversationData && conversationData._id) {
+          // Add conversation to store (if not already there)
+          addConversation(conversationData);
 
-        console.log("🔍 Conversation set as active:", response.data._id);
+          // Set as active conversation
+          onStartConversation?.(conversationData);
+
+          // Close the modal
+          onClose();
+
+          console.log("🔍 Conversation set as active:", conversationData._id);
+        } else {
+          console.error(
+            "No valid conversation data received:",
+            conversationData
+          );
+          alert("Failed to start conversation. Please try again.");
+        }
+      } catch (error) {
+        console.error("Failed to start conversation:", error);
+        // Show error to user
+        alert("Failed to start conversation. Please try again.");
       }
-    } catch (error) {
-      console.error("Failed to start conversation:", error);
-      // Show error to user
-      alert("Failed to start conversation. Please try again.");
-    }
-  };
+    };
 
   // Ensure displayUsers is always an array with better error handling
   const displayUsers = (() => {

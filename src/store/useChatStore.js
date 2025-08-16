@@ -41,7 +41,26 @@ const useChatStore = create((set, get) => ({
 
   addConversation: (conversation) => {
     const { conversations } = get();
-    set({ conversations: [conversation, ...conversations] });
+
+    // Check if conversation already exists
+    const existingIndex = conversations.findIndex(
+      (conv) => conv._id === conversation._id
+    );
+
+    if (existingIndex === -1) {
+      // Add new conversation to the beginning
+      set({ conversations: [conversation, ...conversations] });
+      console.log("🔍 Added new conversation to store:", conversation._id);
+    } else {
+      // Update existing conversation
+      const updatedConversations = [...conversations];
+      updatedConversations[existingIndex] = conversation;
+      set({ conversations: updatedConversations });
+      console.log(
+        "🔍 Updated existing conversation in store:",
+        conversation._id
+      );
+    }
   },
 
   updateConversation: (conversationId, updates) => {
@@ -53,8 +72,10 @@ const useChatStore = create((set, get) => ({
     });
   },
 
-  setActiveConversation: (conversation) =>
-    set({ currentConversation: conversation }),
+  setActiveConversation: (conversation) => {
+    console.log("🔍 Setting active conversation:", conversation?._id);
+    set({ currentConversation: conversation });
+  },
 
   setCurrentConversation: (conversation) =>
     set({ currentConversation: conversation }),
